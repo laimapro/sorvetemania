@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorvete mania</title>
+    <link rel="stylesheet" href="css/pedido.css">
+</head>
+<body>
+    
+  Sai uma casquinha com:<div id="pedido"></div>
+  <button id="prepararPedido" onclick="prepararPedido()" disabled accesskey="p">Preparar Pedido</button>
+  <p id="resultado"></p>
+
+  <script>
+    var pedidosConcluidos = 0;
+    var sabores = [
+      "abacaxi",
+      "baunilha",
+      "ceu_azul",
+      "chocolate",
+      "chocomenta",
+      "creme",
+      "limao",
+      "morango",
+      "uva"
+    ];
+
+    function fazerPedido() {
+      var pedidoElement = document.getElementById("pedido");
+      var prepararPedidoButton = document.getElementById("prepararPedido");
+
+      // Verificar se o nível está armazenado na LocalStorage
+    var fase = localStorage.getItem('fase');
+    
+    if (fase == 1) {
+            var numSabores = 1; // Definindo o número de sabores para 1
+            var pedido = "";
+
+            var sabor = sabores[Math.floor(Math.random() * sabores.length)];
+            var quantidade = Math.floor(Math.random() * 3) + 2;
+
+            pedido += quantidade + " bolas de " + sabor;
+
+            pedidoElement.textContent = pedido;
+            prepararPedidoButton.disabled = false;
+
+            // Salvar o pedido no localStorage
+            localStorage.setItem("pedido", pedido);
+          } 
+
+          if (fase == 2) {
+            var numSabores = 2; // Definindo o número de sabores para 2
+            var pedido = "";
+
+            for (var i = 0; i < numSabores; i++) {
+              var sabor = sabores[Math.floor(Math.random() * sabores.length)];
+              var quantidade = Math.floor(Math.random() * 3) + 2;
+
+              pedido += quantidade + " bolas de " + sabor;
+
+              if (i < numSabores - 1) {
+                pedido += " , "; // Usando " , " para separar os dois sabores
+              }
+            }
+
+            pedidoElement.textContent = pedido;
+            prepararPedidoButton.disabled = false;
+
+            // Salvar o pedido no localStorage
+            localStorage.setItem("pedido", pedido);
+
+          } 
+          
+          if (fase == 3) {
+  var numSabores = 3; // Definindo o número de sabores para 3
+  var pedido = "";
+  var saboresEscolhidos = []; // Array para armazenar os sabores escolhidos
+
+  for (var i = 0; i < numSabores; i++) {
+    var sabor;
+    do {
+      sabor = sabores[Math.floor(Math.random() * sabores.length)];
+    } while (saboresEscolhidos.includes(sabor)); // Verifica se o sabor já foi escolhido
+
+    saboresEscolhidos.push(sabor); // Adiciona o sabor ao array de sabores escolhidos
+
+    var quantidade = Math.floor(Math.random() * 3) + 2;
+
+    pedido += quantidade + " bolas de " + sabor;
+
+    if (i < numSabores - 1) {
+      pedido += ", "; // Usando ", " para separar os três sabores
+    }
+  }
+
+  pedidoElement.textContent = pedido;
+  prepararPedidoButton.disabled = false;
+
+  // Salvar o pedido no localStorage
+  localStorage.setItem("pedido", pedido);
+}
+
+    
+          
+          
+          
+          
+  /*
+            var numSabores = Math.floor(Math.random() * 3) + 1; // Número aleatório de sabores (1 a 3)
+            var pedido = "";
+            
+            for (var i = 0; i < numSabores; i++) {
+              var sabor = sabores[Math.floor(Math.random() * sabores.length)];
+              var quantidade = Math.floor(Math.random() * 3) + 1;
+              
+              pedido += quantidade + " bolas de " + sabor;
+              
+              if (i < numSabores - 1) {
+                pedido += ", ";
+              }
+            */
+
+            pedidoElement.innerHTML = pedido ;
+            prepararPedidoButton.disabled = false;
+
+            // Salvar o pedido no localStorage
+            localStorage.setItem("pedido", pedido);
+
+      }
+  
+
+    function prepararPedido() {
+      window.location.href = "preparacao.html";
+    }
+
+    fazerPedido();
+    // Verificar se há um pedido salvo no localStorage
+    var pedidoSalvo = localStorage.getItem("pedido");
+    if (pedidoSalvo) {
+      document.getElementById("pedido").innerHTML = pedidoSalvo;
+      document.getElementById("prepararPedido").disabled = false;
+    } else {
+      fazerPedido(); // Inicia a geração dos pedidos automaticamente
+    }
+  </script>
+</body>
+</html>

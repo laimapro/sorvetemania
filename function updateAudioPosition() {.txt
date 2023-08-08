@@ -1,0 +1,9 @@
+function updateAudioPosition() {
+  // ... Código existente ...
+
+  // Calculate the X position of the audio based on the player's position
+  const positionX = (rightPressed ? 1 : 0) - (leftPressed ? 1 : 0);
+  pannerNode.positionX.linearRampToValueAtTime(positionX, audioCtx.currentTime + 0.1);
+
+  // ... Resto do código existente ...
+}

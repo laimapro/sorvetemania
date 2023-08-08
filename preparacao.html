@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorvete Mania</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+    .erro-text {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="pedido"></div>
+  <audio id="inicioJogoAudio" autoplay preload>
+    <source src="sons/Início do Jogo.wav" type="audio/wav">
+  </audio>
+  <audio id="somDeFundoAudio" loop>
+    <source src="sons/music.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaAbacaxi">
+    <source src="sons/sabores/abacaxi.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaBaunilha">
+    <source src="sons/sabores/baunilha.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaCeuAzul">
+    <source src="sons/sabores/ceu_azul.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaChocolate">
+    <source src="sons/sabores/chocolate.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaChocomenta">
+    <source src="sons/sabores/chocomenta.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaCreme">
+    <source src="sons/sabores/creme.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaLimao">
+    <source src="sons/sabores/limao.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaMorango">
+    <source src="sons/sabores/morango.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaUva">
+    <source src="sons/sabores/uva.wav" type="audio/wav">
+  </audio>
+  <audio id="somPlayerAudio">
+    <source src="sons/player.wav" type="audio/wav">
+  </audio>
+  <audio id="somBolaPerdida">
+    <source src="sons/sorvetePerdido.wav" type="audio/wav">
+  </audio>
+  <audio id="somParedeAudio">
+    <source src="sons/Colisão.wav" type="audio/wav">
+  </audio>
+
+  <audio id="somNovaPartida">
+    <source src="sons/novapartida.wav" type="audio/wav">
+  </audio>
+
+  <audio id="somBolaPegaAbacaxi" src="sons/sabores/pego/abacaxi.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaBaunilha" src="sons/sabores/pego/baunilha.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaCeuAzul" src="sons/sabores/pego/ceu_azul.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaChocolate" src="sons/sabores/pego/chocolate.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaChocomenta" src="sons/sabores/pego/chocomenta.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaCreme" src="sons/sabores/pego/creme.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaLimao" src="sons/sabores/pego/limao.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaMorango" src="sons/sabores/pego/morango.wav" type="audio/wav"></audio>
+<audio id="somBolaPegaUva" src="sons/sabores/pego/uva.wav" type="audio/wav"></audio>
+
+
+  <script src="js/preparacao.js"></script>
+  <script src="js/fase2.js"></script>
+  <script src="js/fase3.js"></script>
+     <!-- Inclua o CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+
+     <!-- Inclua o JS -->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
+     <style>
+      .meu-alerta {
+          background-color: #f9f9f9;
+          color: #333;
+      }
+
+      .meu-titulo {
+          color: #228B22;
+          font-size: 24px;
+      }
+
+      .meu-texto {
+          color: #555;
+          font-size: 16px;
+      }
+
+      .meu-botao {
+          background-color: #228B22;
+          color: #fff;
+          border-radius: 5px;
+          padding: 10px 20px;
+      }
+  </style>
+</body>
+</html>

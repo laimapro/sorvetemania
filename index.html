@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sorvete Mania</title>
+    <style>
+        hr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    
+    <p>É um prazer receber você à Sorvete Mania!</p>
+    <p>O Sorvete Mania foi desenvolvido no laboratório do Laima, Laboratory of Intelligence Artificial e Machine Aid da Universidade Federal de Pernambuco (Laima-UFPE). Esperamos que este jogo venha entreter-lhe  na divertida brincadeira de pegar deliciosas bolas de sorvete.</p>
+
+    
+    <nav>
+    <ul>
+        <li><a href="pedidos.html" title="Ir para a página de Pedidos" accesskey="1">Jogar</a></li>
+        <li><a href="descricao.html" title="Ir para a página de Descrição do Jogo" accesskey="2">Descrição do Jogo</a></li>
+        <li><a href="regras.html" title="Ir para a página de Regras do Jogo" accesskey="3">Regras do Jogo</a></li>
+        <li><a href="sons.html" title="Explorar Sons do Jogo" accesskey="4">Explorar Sons do Jogo</a></li>
+    </ul>
+</nav>
+<hr>
+<audio id="sorvetemania" src="sons/sorvetemania.wav" autoplay></audio>
+<script>
+    window.onload = function() {
+      var sorvetemania = document.getElementById('sorvetemania');
+      sorvetemania.play();
+
+      // Verificar se o nível está armazenado na LocalStorage
+      var nivelArmazenado = localStorage.getItem('fase');
+
+      if (nivelArmazenado === null) {
+        // Se o nível não estiver armazenado, criar o nível 1 e armazenar na LocalStorage
+        localStorage.setItem('fase', 1);
+        nivelArmazenado = 1; // Definir o nível como 1
+      }
+
+      // Exibir o nível na página
+      var nivelElement = document.createElement('p');
+      nivelElement.textContent = 'Fase: ' + nivelArmazenado;
+      document.body.appendChild(nivelElement);
+
+      // Botão para avançar o nível
+      var botaoAvancarNivel = document.createElement('button');
+      botaoAvancarNivel.textContent = 'Avançar Fase';
+      botaoAvancarNivel.addEventListener('click', function() {
+        nivelArmazenado++; // Atualizar o valor do nível
+        localStorage.setItem('fase', nivelArmazenado); // Armazenar o novo valor na LocalStorage
+        nivelElement.textContent = 'Fase: ' + nivelArmazenado; // Atualizar o texto exibido na página
+      });
+      document.body.appendChild(botaoAvancarNivel);
+
+      // Botão para resetar os níveis
+      var botaoResetNiveis = document.createElement('button');
+      botaoResetNiveis.textContent = 'Resetar Fase';
+      botaoResetNiveis.addEventListener('click', function() {
+        nivelArmazenado = 1; // Voltar o nível para 1
+        localStorage.setItem('fase', nivelArmazenado); // Armazenar o novo valor na LocalStorage
+        nivelElement.textContent = 'Fase: ' + nivelArmazenado; // Atualizar o texto exibido na página
+      });
+      document.body.appendChild(botaoResetNiveis);
+    };
+</script>
+
+<footer>
+    <p>Desenvolvidor responsável: Kawan Xavier</p>
+    <p>Todos os direitos reservados, Laima-UFPE - 2023</p>
+</footer>
+</body>
+</html>
