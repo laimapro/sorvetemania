@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Panorâmico com Rastreamento do Mouse (WAV)</title>
+</head>
+<body>
+  <h1>Sound Panorâmico com Rastreamento do Mouse (WAV)</h1>
+  <p>Mova o mouse para cima, para baixo, para esquerda ou para direita para alterar o panorama do som.</p>
+  <script>
+    // Criação do contexto de áudio
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Função para carregar o som
+    async function loadSound(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return audioContext.decodeAudioData(arrayBuffer);
+    }
+
+    // Variáveis para rastrear o movimento horizontal e vertical do mouse e ajustar a panorâmica e intensidade do som
+    let horizontalPosition = 0;
+    let verticalPosition = 0;
+    const maxHorizontalPosition = window.innerWidth;
+    const maxVerticalPosition = window.innerHeight;
+
+    // Função para atualizar a posição horizontal e vertical do mouse
+    function updateMousePosition(event) {
+      horizontalPosition = event.clientX;
+      verticalPosition = event.clientY;
+    }
+
+    // Evento de rastreamento do mouse
+    window.addEventListener('mousemove', updateMousePosition);
+
+    // Função para reproduzir o som com panorâmica e intensidade variáveis
+    function playSound(buffer, intensity, panX, panY) {
+      const source = audioContext.createBufferSource();
+      const panNode = audioContext.createStereoPanner();
+      const lowPassFilter = audioContext.createBiquadFilter();
+      const highPassFilter = audioContext.createBiquadFilter();
+      const gainNode = audioContext.createGain();
+
+      source.buffer = buffer;
+      gainNode.gain.value = intensity;
+      panNode.pan.value = panX;
+
+      // Configura os filtros para discriminar entre agudo e grave
+      lowPassFilter.type = 'lowpass';
+      lowPassFilter.frequency.value = 1000; // Frequência de corte para o grave
+      highPassFilter.type = 'highpass';
+      highPassFilter.frequency.value = 1000; // Frequência de corte para o agudo
+
+      // Conecta o nó de panorama aos filtros e, em seguida, ao nó de ganho e ao destino de áudio
+      source.connect(lowPassFilter);
+      source.connect(highPassFilter);
+      lowPassFilter.connect(panNode);
+      highPassFilter.connect(panNode);
+      panNode.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      source.start(0);
+    }
+
+    // Função para ajustar a panorâmica horizontal com base na posição horizontal do mouse
+    function adjustPanXWithMouse() {
+      // Mapeia a posição horizontal do mouse para a faixa de -1 (esquerda) a 1 (direita)
+      return (horizontalPosition / maxHorizontalPosition) * 2 - 1;
+    }
+
+    // Função para ajustar a panorâmica vertical com base na posição vertical do mouse
+    function adjustPanYWithMouse() {
+      // Mapeia a posição vertical do mouse para a faixa de -1 (para cima) a 1 (para baixo)
+      return (verticalPosition / maxVerticalPosition) * 2 - 1;
+    }
+
+    // Função para ajustar a intensidade do som com base na posição vertical do mouse
+    function adjustIntensityWithMouse() {
+      // Mapeia a posição vertical do mouse para a faixa de 0 a 1
+      return verticalPosition / maxVerticalPosition;
+    }
+
+    // Função principal para executar o código
+    async function main() {
+  try {
+    // Carrega o som (substitua "caminho/para/o/som.wav" pelo caminho correto do seu arquivo de som)
+    const soundBuffer = await loadSound('sons/sabores/chocolate.wav');
+
+    // Função para reproduzir o som com base no movimento do mouse
+    function playSoundOnMouseMove() {
+      const intensity = adjustIntensityWithMouse(); // Obtém a intensidade do som com base no movimento vertical do mouse
+      const panX = adjustPanXWithMouse(); // Obtém a posição panorâmica horizontal com base no movimento horizontal do mouse
+      const panY = adjustPanYWithMouse(); // Obtém a posição panorâmica vertical com base no movimento vertical do mouse
+      playSound(soundBuffer, intensity, panX, panY);
+    }
+
+    // Adiciona o evento de movimento do mouse para reproduzir o som
+    window.addEventListener('mousemove', playSoundOnMouseMove);
+  } catch (error) {
+    console.error('Erro ao carregar o som:', error);
+  }
+}
+
+    // Chama a função principal para iniciar a aplicação
+    main();
+  </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Panorâmico com Rastreamento das Setas do Teclado (WAV)</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    canvas {
+      width: 100px;
+      height: 100px;
+      border: 2px solid black;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    #horizontalIndicator {
+      width: 5px;
+      height: 100%;
+      background-color: red;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #verticalIndicator {
+      width: 100%;
+      height: 5px;
+      background-color: blue;
+      position: absolute;
+      left: 0;
+      bottom: 50%;
+      transform: translateY(50%);
+    }
+  </style>
+</head>
+<body>
+  <h1>Sound Panorâmico com Rastreamento das Setas do Teclado (WAV)</h1>
+  <p>Use as setas do teclado para cima, para baixo, para esquerda ou para direita para alterar o panorama do som.</p>
+  <canvas id="visualizer"></canvas>
+  <div id="horizontalIndicator"></div>
+  <div id="verticalIndicator"></div>
+  <script>
+    // Código JavaScript modificado com as mudanças
+
+    // Criação do contexto de áudio
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Função para carregar o som
+    async function loadSound(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return audioContext.decodeAudioData(arrayBuffer);
+    }
+
+    // Variáveis para rastrear o movimento horizontal e vertical com base nas setas do teclado
+    let horizontalPosition = 0;
+    let verticalPosition = 0;
+    const maxHorizontalPosition = window.innerWidth;
+    const maxVerticalPosition = window.innerHeight;
+
+    // Função para atualizar a posição horizontal e vertical com base nas setas do teclado
+    function updatePositionWithArrowKeys(event) {
+      const arrowKeyCode = {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        ArrowLeft: 'left',
+        ArrowRight: 'right'
+      };
+
+      const arrowDirection = arrowKeyCode[event.key];
+      if (arrowDirection === 'up' || arrowDirection === 'down') {
+        verticalPosition += (arrowDirection === 'up') ? -5 : 5;
+        if (verticalPosition < 0) verticalPosition = 0;
+        if (verticalPosition > maxVerticalPosition) verticalPosition = maxVerticalPosition;
+      } else if (arrowDirection === 'left' || arrowDirection === 'right') {
+        horizontalPosition += (arrowDirection === 'left') ? -10 : 10;
+        if (horizontalPosition < 0) horizontalPosition = 0;
+        if (horizontalPosition > maxHorizontalPosition) horizontalPosition = maxHorizontalPosition;
+      }
+    }
+
+    // Evento de rastreamento das setas do teclado
+    window.addEventListener('keydown', updatePositionWithArrowKeys);
+
+    // Função para reproduzir o som com panorâmica, intensidade e frequência variáveis
+    function playSound(buffer, intensity, panX, panY, frequency) {
+      const source = audioContext.createBufferSource();
+      const panNode = audioContext.createStereoPanner();
+      const lowPassFilter = audioContext.createBiquadFilter();
+      const highPassFilter = audioContext.createBiquadFilter();
+      const gainNode = audioContext.createGain();
+      const oscillator = audioContext.createOscillator();
+
+      source.buffer = buffer;
+      gainNode.gain.value = intensity;
+      panNode.pan.value = panX;
+      oscillator.frequency.value = frequency;
+
+      // Configura os filtros para discriminar entre agudo e grave
+      lowPassFilter.type = 'lowpass';
+      lowPassFilter.frequency.value = 8000; // Frequência de corte para o grave
+      highPassFilter.type = 'highpass';
+      highPassFilter.frequency.value = 4000; // Frequência de corte para o agudo
+
+      // Conecta o nó de panorama, o oscilador e os filtros ao nó de ganho e ao destino de áudio
+      source.connect(lowPassFilter);
+      source.connect(highPassFilter);
+      lowPassFilter.connect(panNode);
+      highPassFilter.connect(panNode);
+      panNode.connect(gainNode);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+      source.start(0);
+    }
+
+    // Função para ajustar a panorâmica horizontal com base na posição horizontal
+    function adjustPanXWithMouse() {
+      return (horizontalPosition / maxHorizontalPosition) * 2 - 1;
+    }
+
+    // Função para ajustar a panorâmica vertical com base na posição vertical
+    function adjustPanYWithMouse() {
+      return (verticalPosition / maxVerticalPosition) * 2 - 1;
+    }
+
+    // Função para ajustar a intensidade do som com base na posição vertical
+    function adjustIntensityWithMouse() {
+      return verticalPosition / maxVerticalPosition;
+    }
+
+    // Função para ajustar a frequência do som com base na posição horizontal
+    function adjustFrequencyWithMouse() {
+      return 100 + (horizontalPosition / maxHorizontalPosition) * 2000; // Varia a frequência entre 100 Hz e 2100 Hz
+    }
+
+    // Função para atualizar a posição visual da panorâmica
+    function updateVisualPosition() {
+      const horizontalIndicator = document.getElementById('horizontalIndicator');
+      const verticalIndicator = document.getElementById('verticalIndicator');
+      horizontalIndicator.style.left = `${horizontalPosition}px`;
+      verticalIndicator.style.bottom = `${verticalPosition}px`;
+    }
+
+    // Função principal para executar o código
+    async function main() {
+      try {
+        // Carrega o som (substitua "caminho/para/o/som.wav" pelo caminho correto do seu arquivo de som)
+        const soundBuffer = await loadSound('sons/sabores/abacaxi.wav');
+
+        // Reproduz o som continuamente com a panorâmica, intensidade e frequência variáveis
+        setInterval(() => {
+          const intensity = adjustIntensityWithMouse();
+          const panX = adjustPanXWithMouse();
+          const panY = adjustPanYWithMouse();
+          const frequency = adjustFrequencyWithMouse();
+          playSound(soundBuffer, intensity, panX, panY, frequency);
+          updateVisualPosition();
+        }, 100);
+      } catch (error) {
+        console.error('Erro ao carregar o som:', error);
+      }
+    }
+
+    // Chama a função principal para iniciar a aplicação
+    main();
+  </script>
+</body>
+</html>

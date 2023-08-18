@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Panorâmico com Rastreamento das Setas do Teclado (WAV)</title>
+  <style>
+    /* Estilos omitidos para manter o mesmo */
+  </style>
+</head>
+<body>
+  <h1>Sound Panorâmico com Rastreamento das Setas do Teclado (WAV)</h1>
+  <p>Use as setas do teclado para esquerda ou para direita para alterar o panorama do som.</p>
+  <canvas id="visualizer"></canvas>
+  <!-- Add a visual indicator element with the id 'horizontalIndicator' -->
+  <div id="horizontalIndicator" style="position: absolute; top: 50px; height: 10px; width: 10px; background-color: red;"></div>
+  <script>
+    // Criação do contexto de áudio
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Função para carregar o som
+    async function loadSound(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return audioContext.decodeAudioData(arrayBuffer);
+    }
+
+    // Variáveis para rastrear o movimento horizontal com base nas setas do teclado
+    let horizontalPosition = 0;
+    const maxHorizontalPosition = window.innerWidth;
+
+    // Função para atualizar a posição horizontal com base nas setas do teclado
+    function updatePositionWithArrowKeys(event) {
+      const arrowKeyCode = {
+        ArrowLeft: 'left',
+        ArrowRight: 'right'
+      };
+
+      const arrowDirection = arrowKeyCode[event.key];
+      if (arrowDirection === 'left' || arrowDirection === 'right') {
+        horizontalPosition += (arrowDirection === 'left') ? -10 : 10;
+        if (horizontalPosition < 0) horizontalPosition = 0;
+        if (horizontalPosition > maxHorizontalPosition) horizontalPosition = maxHorizontalPosition;
+      }
+    }
+
+    // Evento de rastreamento das setas do teclado para atualizar a posição horizontal
+    window.addEventListener('keydown', (event) => {
+      const arrowKeyCode = {
+        ArrowLeft: 'left',
+        ArrowRight: 'right'
+      };
+
+      const arrowDirection = arrowKeyCode[event.key];
+      if (arrowDirection === 'left' || arrowDirection === 'right') {
+        updatePositionWithArrowKeys(event);
+      }
+    });
+
+    // Função para reproduzir o som com panorâmica, intensidade e frequência variáveis
+    function playSound(buffer, intensity, panX) {
+      const source = audioContext.createBufferSource();
+      const panNode = audioContext.createStereoPanner();
+      const lowPassFilter = audioContext.createBiquadFilter();
+      const highPassFilter = audioContext.createBiquadFilter();
+      const gainNode = audioContext.createGain();
+
+      source.buffer = buffer;
+      gainNode.gain.value = intensity;
+      panNode.pan.value = panX;
+
+      // Configura os filtros para discriminar entre agudo e grave
+      lowPassFilter.type = 'lowpass';
+      lowPassFilter.frequency.value = 1000; // Frequência de corte para o grave
+      highPassFilter.type = 'highpass';
+      highPassFilter.frequency.value = 1000; // Frequência de corte para o agudo
+
+      // Conecta o nó de panorama e os filtros ao nó de ganho e ao destino de áudio
+      source.connect(lowPassFilter);
+      source.connect(highPassFilter);
+      lowPassFilter.connect(panNode);
+      highPassFilter.connect(panNode);
+      panNode.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      source.start(0);
+    }
+
+    // Função para ajustar a panorâmica horizontal com base na posição horizontal
+    function adjustPanXWithArrowKeys() {
+      return (horizontalPosition / maxHorizontalPosition) * 2 - 1;
+    }
+
+    // Função para atualizar a posição visual da panorâmica
+    function updateVisualPosition() {
+      const horizontalIndicator = document.getElementById('horizontalIndicator');
+      horizontalIndicator.style.left = `${horizontalPosition}px`;
+    }
+
+    // Função principal para executar o código
+    async function main() {
+      try {
+        // Carrega o som (substitua "caminho/para/o/som.wav" pelo caminho correto do seu arquivo de som)
+        const soundBuffer = await loadSound('sons/sabores/abacaxi.wav');
+
+        // Variável para rastrear o estado das setas
+        const arrowState = {
+          ArrowLeft: false,
+          ArrowRight: false
+        };
+
+        // Evento quando uma tecla é pressionada
+        window.addEventListener('keydown', (event) => {
+          const arrowDirection = event.key;
+          if (arrowDirection in arrowState) {
+            arrowState[arrowDirection] = true;
+          }
+        });
+
+        // Evento quando uma tecla é solta
+        window.addEventListener('keyup', (event) => {
+          const arrowDirection = event.key;
+          if (arrowDirection in arrowState) {
+            arrowState[arrowDirection] = false;
+          }
+        });
+
+        // Loop de atualização do som
+        function updateSound() {
+          const intensity = 1; // Intensidade máxima
+          const panX = adjustPanXWithArrowKeys();
+
+          // Se alguma seta estiver pressionada, toca o som
+          if (arrowState.ArrowLeft || arrowState.ArrowRight) {
+            playSound(soundBuffer, intensity, panX);
+          }
+
+          // Atualiza a posição visual da panorâmica
+          updateVisualPosition();
+
+          // Chama esta função novamente na próxima animação do navegador
+          requestAnimationFrame(updateSound);
+        }
+
+        // Inicia a animação do som
+       

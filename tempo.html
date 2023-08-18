@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cronômetro</title>
+</head>
+<body>
+    <div id="timer">15</div>
+    <button id="startButton">Iniciar</button>
+    <button id="pickButton">Pegar Pedido</button>
+
+    <script>
+        let baseTime = 15; // Tempo base de 15 segundos
+        let timeRemaining = baseTime;
+        let increment = 5; // Incremento de 5 segundos
+        let timerInterval;
+        let incrementCounter = 1; // Contador de incrementos
+
+        function startTimer() {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const timerDisplay = document.getElementById("timer");
+            timerDisplay.textContent = timeRemaining;
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                alert("Tempo esgotado! O pedido não foi pego.");
+                incrementCounter++; // Incrementa o contador de incrementos
+                timeRemaining = baseTime + (incrementCounter * increment); // Calcula o novo tempo
+                startTimer();
+            }
+
+            timeRemaining--;
+        }
+
+        function pickOrder() {
+            clearInterval(timerInterval);
+            alert("Pedido pego corretamente!");
+            incrementCounter = 1; // Reseta o contador de incrementos
+            timeRemaining = baseTime; // Reseta o tempo para o tempo base
+            startTimer();
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => {
+            startTimer();
+        });
+
+        document.getElementById("pickButton").addEventListener("click", () => {
+            pickOrder();
+        });
+
+        // Inicia o cronômetro quando a página carregar
+        window.onload = () => {
+            startTimer();
+        };
+    </script>
+</body>
+</html>

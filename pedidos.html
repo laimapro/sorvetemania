@@ -73,34 +73,62 @@
           } 
           
           if (fase == 3) {
-  var numSabores = 3; // Definindo o número de sabores para 3
-  var pedido = "";
-  var saboresEscolhidos = []; // Array para armazenar os sabores escolhidos
+            var numSabores = 3; // Definindo o número de sabores para 3
+            var pedido = "";
+            var saboresEscolhidos = []; // Array para armazenar os sabores escolhidos
 
-  for (var i = 0; i < numSabores; i++) {
-    var sabor;
-    do {
-      sabor = sabores[Math.floor(Math.random() * sabores.length)];
-    } while (saboresEscolhidos.includes(sabor)); // Verifica se o sabor já foi escolhido
+            for (var i = 0; i < numSabores; i++) {
+              var sabor;
+              do {
+                sabor = sabores[Math.floor(Math.random() * sabores.length)];
+              } while (saboresEscolhidos.includes(sabor)); // Verifica se o sabor já foi escolhido
 
-    saboresEscolhidos.push(sabor); // Adiciona o sabor ao array de sabores escolhidos
+              saboresEscolhidos.push(sabor); // Adiciona o sabor ao array de sabores escolhidos
 
-    var quantidade = Math.floor(Math.random() * 3) + 2;
+              var quantidade = Math.floor(Math.random() * 3) + 2;
 
-    pedido += quantidade + " bolas de " + sabor;
+              pedido += quantidade + " bolas de " + sabor;
 
-    if (i < numSabores - 1) {
-      pedido += ", "; // Usando ", " para separar os três sabores
-    }
-  }
+              if (i < numSabores - 1) {
+                pedido += ", "; // Usando ", " para separar os três sabores
+              }
+            }
 
-  pedidoElement.textContent = pedido;
-  prepararPedidoButton.disabled = false;
+            pedidoElement.textContent = pedido;
+            prepararPedidoButton.disabled = false;
 
-  // Salvar o pedido no localStorage
-  localStorage.setItem("pedido", pedido);
-}
+            // Salvar o pedido no localStorage
+            localStorage.setItem("pedido", pedido);
+          }
 
+          if (fase == 4) {
+            var numSabores = 3; // Definindo o número de sabores para 3
+            var pedido = "";
+            var saboresEscolhidos = []; // Array para armazenar os sabores escolhidos
+
+            for (var i = 0; i < numSabores; i++) {
+              var sabor;
+              do {
+                sabor = sabores[Math.floor(Math.random() * sabores.length)];
+              } while (saboresEscolhidos.includes(sabor)); // Verifica se o sabor já foi escolhido
+
+              saboresEscolhidos.push(sabor); // Adiciona o sabor ao array de sabores escolhidos
+
+              var quantidade = Math.floor(Math.random() * 3) + 2;
+
+              pedido += quantidade + " bolas de " + sabor;
+
+              if (i < numSabores - 1) {
+                pedido += ", "; // Usando ", " para separar os três sabores
+              }
+            }
+
+            pedidoElement.textContent = pedido;
+            prepararPedidoButton.disabled = false;
+
+            // Salvar o pedido no localStorage
+            localStorage.setItem("pedido", pedido);
+          }
     
           
           

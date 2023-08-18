@@ -1,9 +1,87 @@
 var fase = localStorage.getItem('fase');
 
 
-if(fase == 3){
-    console.log('É fase 3 uhul');
+if(fase == 4){
+  console.log('É fase 4 uhul');
+  var novaDiv = document.createElement("div");
+  novaDiv.setAttribute("id", "countdown");
+  document.body.appendChild(novaDiv);
+
+
+  var divShowTime = document.createElement("div");
+  divShowTime.setAttribute("id", "divShowTime");
+  document.body.appendChild(divShowTime);
+  
+  var baseTime = 10; // Tempo base de 10 segundos
+  var timeRemaining = baseTime;
+  var increment = 5; // Incremento de 5 segundos
+  var incrementCounter = 1; // Contador de incrementos
+  var countdownInterval;
+  
+  function startCountdown() {
+    countdownInterval = setInterval(function() {
+      const countdownDisplay = document.getElementById("countdown");
+      countdownDisplay.textContent = timeRemaining;
+      
+      lerTextoEmVozAlta(timeRemaining);
+      
+      if (timeRemaining <= 0) {
+        clearInterval(countdownInterval);
+        extendTime(); // Chama a função para estender o tempo
+        showTimeUpAlert(); // Mostra o alerta após o término do contador
+      }
+  
+      timeRemaining--;
+    }, 1000); // Atualiza o contador a cada 1 segundo (1000 milissegundos)
+  }
+  
+  function resetCountdown() {
+    clearInterval(countdownInterval);
+    timeRemaining = baseTime + (incrementCounter * increment); // Calcula o novo tempo
+    startCountdown();
+  }
+  
+  function extendTime() {
+    incrementCounter++; // Incrementa o contador de incrementos
+    timeRemaining = baseTime + (incrementCounter * increment); // Calcula o novo tempo
+  }
+  
+  function showTimeUpAlert() {
+    lerTextoEmVozAlta('Tempo esgotado!');
+    const alertMessage = `Tempo esgotado! Pressione Enter para continuar.`;
+  
+    Swal.fire({
+      title: 'Tempo esgotado!',
+      html: `<span class="erro-text">${alertMessage}</span>`,
+      icon: 'error',
+      showConfirmButton: false,
+      customClass: {
+        container: 'meu-alerta',
+        title: 'meu-titulo',
+      },
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.backdrop) {
+      }
+      
+    });
+  
+    document.addEventListener('keyup', function (event) {
+      if (event.key === 'Enter') {
+        Swal.close();
+        resetCountdown();
+      }
+    });
+  
+    lerTextoEmVozAlta(alertMessage);
+  }
+  
+  function stopCountdown() {
+    clearInterval(countdownInterval);
+  }
+  
   var pontuacaoCerto = localStorage.getItem('pontuacaoCerto');
+
+
   if (pontuacaoCerto === null) {
     // Se a pontuação não estiver armazenada, definir como 0
     pontuacaoCerto = 0;
@@ -22,6 +100,7 @@ if(fase == 3){
   }
 
 
+
     window.addEventListener("load", function() {
         const inicioJogoAudio = document.getElementById("inicioJogoAudio");
         inicioJogoAudio.play();
@@ -35,12 +114,13 @@ if(fase == 3){
     
       var pedidoSalvo = localStorage.getItem("pedido");
       if (pedidoSalvo) {
+        lerpedidoEmVozAlta('Prepare ' + pedidoSalvo);
+        alert("Prepare: " + pedidoSalvo);
         document.getElementById("pedido").innerHTML = pedidoSalvo;
       } else {
         document.getElementById("pedido").innerHTML = "Nenhum pedido encontrado.";
       }
 
-      lerpedidoEmVozAlta(pedidoSalvo + ', Por favor?');
       
       function lerpedidoEmVozAlta(texto) {
         // Verifica se o navegador suporta a API de Síntese de Fala
@@ -396,6 +476,7 @@ if(fase == 3){
       function verificarTodasBolasColetadas() {
         if (score === maxBalls && !todasBolasColetadas) {
           todasBolasColetadas = true;
+          stopCountdown() ;
           console.log("Pegou todas as bolas!");
       
           // Criar objetos para armazenar as quantidades de cada sabor
@@ -456,19 +537,20 @@ if(fase == 3){
             }
           }
           function avancarEtapa() {
-            etapaFase3++; // Atualizar o valor da etapa
-            localStorage.setItem('etapa3', etapaFase3); // Armazenar o novo valor na LocalStorage
-            etapaElement.textContent = 'Atendendo ao pedido: ' + etapaFase3; // Atualizar o texto exibido na página
+            etapaFase4++; // Atualizar o valor da etapa
+            localStorage.setItem('etapa4', etapaFase4); // Armazenar o novo valor na LocalStorage
+            etapaElement.textContent = 'Atendendo ao pedido: ' + etapaFase4; // Atualizar o texto exibido na página
           }
           // Exibir o alerta de acordo com o resultado da verificação
           if (pedidoCorreto) {
-            if(etapaFase3 >= 1 && etapaFase3 <= 3){
+            if(etapaFase4 >= 1 && etapaFase4 <= 3){
               pontuacaoCerto +=50;
               localStorage.setItem('pontuacaoCerto', pontuacaoCerto);
               console.log("Pontuação Certa: " + pontuacaoCerto);
               avancarEtapa();
               mostrarAlertaCorreto();
               gerapedido();
+              resetCountdown();
             }else{
               //alert('Pontuação: ');
               mostrarRelatorio();
@@ -587,17 +669,12 @@ if(fase == 3){
         // Verifica se a tecla pressionada é a tecla "Enter"
         if (event.key === 'Enter') {
             // Fecha o alerta
-            localStorage.setItem('fase', 4);
-            gerapedido();
-
             Swal.close();
             window.location.href = 'preparacao.html';
         }
     });
     lerTextoEmVozAlta(alertMessage);
 }
-
-
 
 
 function gerapedido() {
@@ -640,17 +717,17 @@ function gerapedido() {
   
   
       
-  var etapaFase3 = localStorage.getItem('etapa3');
+  var etapaFase4 = localStorage.getItem('etapa4');
 
-  if (etapaFase3 === null) {
+  if (etapaFase4 === null) {
     // Se o nível não estiver armazenado, criar a etapa 1 e armazenar na LocalStorage
     localStorage.setItem('etapa3', 3);
-    etapaFase3 = 1; // Definir etapa como 1
+    etapaFase4 = 1; // Definir etapa como 1
   }
 
    // Exibir etapa na página
    var etapaElement = document.createElement('p');
-   etapaElement.textContent = 'Atendendo ao pedido: ' + etapaFase3;
+   etapaElement.textContent = 'Atendendo ao pedido: ' + etapaFase4;
    document.body.appendChild(etapaElement);
 
 
@@ -710,25 +787,47 @@ function gerapedido() {
         }
       });
       }
-    
+      divShowTime
       function drawScore() {
         ctx.fillStyle = "black";
         ctx.font = "16px Arial";
-        const scoreText= "Bolas Pegas:";
+    
+        const countdownDiv = document.getElementById("countdown");
+        countdownDiv.style.position = "absolute"; 
+        countdownDiv.style.display = "none"; // Ajuste a posição vertical conforme necessário
+
+        const UdivShowTime = document.getElementById("divShowTime");
+        UdivShowTime.style.position = "absolute"; 
+        UdivShowTime.style.top = "10px"; // Ajuste a posição vertical conforme necessário
+    
+        const contador = parseInt(countdownDiv.textContent); // Usando o valor do div countdown
+        const contadorText = "Você tem " + contador + " segundos para preparar o pedido";
+        UdivShowTime.innerText = contadorText;
+    
+        const scoreText = "Bolas Pegas:";
         const scoreTextWidth = ctx.measureText(scoreText).width;
         ctx.fillText(scoreText, canvas.width - scoreTextWidth - 10, 20);
     
         let yOffset = 40;
         for (const flavor in flavors) {
-          if (flavors.hasOwnProperty(flavor)) {
-            const flavorText = flavor + ": " + flavors[flavor];
-            const flavorTextWidth = ctx.measureText(flavorText).width;
-            ctx.fillText(flavorText, canvas.width - flavorTextWidth - 10, yOffset);
-            yOffset += 20;
-          }
+            if (flavors.hasOwnProperty(flavor)) {
+                const flavorText = flavor + ": " + flavors[flavor];
+                const flavorTextWidth = ctx.measureText(flavorText).width;
+                ctx.fillText(flavorText, canvas.width - flavorTextWidth - 10, yOffset);
+                yOffset += 20;
+            }
         }
-      }
-      let todasBolasColetadas = false;
+    }
+    
+    
+    let todasBolasColetadas = false;
+    
+
+
+      
+
+
+
 
       function gameLoop() {
         clearCanvas();
@@ -760,4 +859,5 @@ function gerapedido() {
     }
       let stickNewBalls = false; // Variável para controlar a colagem das bolas ao jogador
       gameLoop();
+      startCountdown();
 }

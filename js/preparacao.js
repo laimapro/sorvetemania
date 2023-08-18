@@ -38,13 +38,29 @@ if(fase == 1){
       });
 
       var pedidoSalvo = localStorage.getItem("pedido");
-if (pedidoSalvo) {
-  document.getElementById("pedido").innerHTML = pedidoSalvo;
-} else {
-  document.getElementById("pedido").innerHTML = "Nenhum pedido encontrado.";
-}
-    
-lerpedidoEmVozAlta(pedidoSalvo + ', Por favor?');
+      if (pedidoSalvo) {
+        //document.getElementById("pedido").innerHTML = pedidoSalvo;
+       lerpedidoEmVozAlta('Prepare ' + pedidoSalvo);
+        alert("Prepare: " + pedidoSalvo);
+       
+      } else {
+        document.getElementById("pedido").innerHTML = "Nenhum pedido encontrado.";
+      }
+ 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function lerpedidoEmVozAlta(texto) {
   // Verifica se o navegador suporta a API de Síntese de Fala
@@ -374,7 +390,7 @@ window.addEventListener("keydown", function(event) {
      
        // Incrementa a pontuação em 3 para cada bola coletada
        bolasColetadas.forEach((ball) => {
-         pontuacao += 3;
+         pontuacao += 30;
        });
      }
       // Função para atualizar a posição das bolas
@@ -446,9 +462,9 @@ window.addEventListener("keydown", function(event) {
 
             
             if (pontuacao > 0) {
-              pontuacao-=1;
-              lerpedidoEmVozAlta('perdeu 1 ponto');
-              pontosPerdidos += 1
+              pontuacao-=10;
+              lerpedidoEmVozAlta('perdeu 10 ponto');
+              pontosPerdidos += 10
             }
           }
     
@@ -547,7 +563,6 @@ window.addEventListener("keydown", function(event) {
           ctx.textAlign = "center";
           ctx.fillText(capitalizeFirstLetter(ball.flavor), ball.x + ball.width, ball.y + ball.height + 15);
 
-          ctx.fillText(`X: ${ball.x.toFixed(2)}, Y: ${ball.y.toFixed(2)}, Z: ${pannerNode.positionZ.value.toFixed(2)}`, ball.x + ball.width, ball.y + ball.height + 30);
         });
       }
     
