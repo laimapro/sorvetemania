@@ -5,17 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sorvete Mania</title>
   <style>
+    #canvas-container {
+            position: relative;
+            width: 1410px;
+            height: 730px;
+        }
+
     canvas {
-      border: 1px solid black;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid #000;
+            z-index: 1; /* Coloca o canvas em cima da imagem */
     }
     .erro-text {
       color: red;
     }
+    #canvas-background {
+            
+            width: 100%;
+            height: 100%;
+            background-image: url('img/fundo.jpg');
+            background-size: cover;
+            background-position: center;
+        }
   </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="1410px" height="730px"></canvas>
-  <div id="pedido"></div>
+
+
+  <div id="canvas-container">
+    <canvas id="gameCanvas" width="1410px" height="730px"></canvas>
+    <div id="canvas-background"></div>
+  </div>
+
+
+
+<div id="pedido"></div>
   <audio id="inicioJogoAudio" autoplay preload>
     <source src="sons/Início do Jogo.wav" type="audio/wav">
   </audio>
@@ -80,6 +106,7 @@
   <script src="js/fase2.js"></script>
   <script src="js/fase3.js"></script>
   <script src="js/fase4.js"></script>
+  
      <!-- Inclua o CSS -->
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
 

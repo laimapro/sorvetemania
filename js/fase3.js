@@ -182,6 +182,27 @@ if(fase == 3){
         somBolaPegaAudio.volume = volume;
       });
     
+      canvas.addEventListener("mousemove", (event) => {
+        const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+        squareX = mouseX - squareWidth / 2;
+      
+        // Make sure the player stays within the canvas boundaries
+        if (squareX < 0) {
+          squareX = 0;
+        } else if (squareX + squareWidth > canvas.width) {
+          squareX = canvas.width - squareWidth;
+        }
+      });
+    
+      canvas.addEventListener("mousedown", () => {
+        stickNewBalls = true;
+      });
+      
+      // Adicione um novo ouvinte de eventos para o evento mouseup para indicar que o botão do mouse foi solto
+      canvas.addEventListener("mouseup", () => {
+        stickNewBalls = false;
+      });
+      
       // Adicionando os ouvintes de eventos para capturar as teclas pressionadas
       document.addEventListener("keydown", keyDownHandler);
       document.addEventListener("keyup", keyUpHandler);

@@ -46,22 +46,7 @@ if(fase == 1){
       } else {
         document.getElementById("pedido").innerHTML = "Nenhum pedido encontrado.";
       }
- 
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      
 function lerpedidoEmVozAlta(texto) {
   // Verifica se o navegador suporta a API de Síntese de Fala
   if ('speechSynthesis' in window) {
@@ -107,7 +92,8 @@ function lerpedidoEmVozAlta(texto) {
       // Obtendo o elemento do canvas e o contexto 2D
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
-    
+
+
       // Definindo as posições e o tamanho do jogador
       let squareX = canvas.width / 2 - 50;
       const squareY = canvas.height - 100;
@@ -239,6 +225,27 @@ function lerpedidoEmVozAlta(texto) {
       }
       
     
+      canvas.addEventListener("mousemove", (event) => {
+        const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+        squareX = mouseX - squareWidth / 2;
+      
+        // Make sure the player stays within the canvas boundaries
+        if (squareX < 0) {
+          squareX = 0;
+        } else if (squareX + squareWidth > canvas.width) {
+          squareX = canvas.width - squareWidth;
+        }
+      });
+
+      canvas.addEventListener("mousedown", () => {
+        stickNewBalls = true;
+      });
+      
+      // Adicione um novo ouvinte de eventos para o evento mouseup para indicar que o botão do mouse foi solto
+      canvas.addEventListener("mouseup", () => {
+        stickNewBalls = false;
+      });
+
       // Adicionando os ouvintes de eventos para capturar as teclas pressionadas
       document.addEventListener("keydown", keyDownHandler);
       document.addEventListener("keyup", keyUpHandler);
